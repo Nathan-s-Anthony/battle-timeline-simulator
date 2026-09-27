@@ -62,14 +62,14 @@ function BattleMap({
   return /* @__PURE__ */ jsx("div", { className: "w-full h-full  bg-white absolute overflow-hidden inset-0 flex justify-center items-center", children: /* @__PURE__ */ jsx("div", { className: "h-180 w-full max-w-350", children: /* @__PURE__ */ jsxs("div", { className: "w-full h-full flex", children: [
     /* @__PURE__ */ jsx("div", { className: "w-100 bg-[#141D20]", children: /* @__PURE__ */ jsxs("div", { className: "", children: [
       /* @__PURE__ */ jsx("span", { children: "Historical Battle Timeline" }),
-      /* @__PURE__ */ jsx("h1", { className: classes.classHeading, style: { lineHeight: 1 }, children: "Cassino" }),
+      /* @__PURE__ */ jsx("h1", { className: classes.classHeading, children: "Cassino" }),
       /* @__PURE__ */ jsx("p", { className: classes.classPara, children: BATTLE_TIMELINE_SIMULATOR_VERSION }),
       /* @__PURE__ */ jsxs("div", { className: "w-full flex items-center justify-between", children: [
-        /* @__PURE__ */ jsx("div", { className: " p-2 border border-secondary ", children: "Historical Mode" }),
-        /* @__PURE__ */ jsx("div", { className: "p-2border border-secondary ", children: "Experimental Mode" })
+        /* @__PURE__ */ jsx("div", { className: "p-2 border border-secondary ", children: "Historical Mode" }),
+        /* @__PURE__ */ jsx("div", { className: "p-2 border border-secondary ", children: "Experimental Mode" })
       ] })
     ] }) }),
-    /* @__PURE__ */ jsx("div", { className: "w-full h-full ", children: /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsx("div", { className: "w-full h-full", children: /* @__PURE__ */ jsx(
       Map,
       {
         initialViewState: {
