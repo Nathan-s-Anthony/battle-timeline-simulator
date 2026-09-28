@@ -18,8 +18,12 @@
     ".": {
       "import": "./dist/index.js"
     },
-    "./output.css": "./dist/output.css"
+      "./dist/*": "./dist/*"
   },
+    "sideEffects": [
+    "*.css",
+    "src/**/*.ts"
+  ],
   "peerDependencies": {
     "react": "19.2.8",
     "react-dom": "19.2.8"

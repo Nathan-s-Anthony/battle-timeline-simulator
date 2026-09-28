@@ -21,7 +21,33 @@
   --font-mono: var(--font-manrope-mono);
   --font-mono-alt: var(--font-dm-mono);
 }
-
+.simulation-speed.active {
+  @apply bg-secondary text-foreground;
+}
+.config-panel.active {
+  @apply block;
+}
+.simulation-button.active {
+  @apply bg-tertiary text-primary;
+}
+button.disabled {
+  @apply bg-red-500;
+}
 h1 {
   @apply text-6xl;
+}
+.on-extra {
+  @apply bg-secondary text-foreground px-2;
+}
+.off-extra {
+  @apply bg-secondary text-foreground border border-secondary px-2;
+}
+.results {
+  @apply duration-300 transition-all h-8;
+}
+.results.active {
+  @apply h-100;
+}
+.modal.active {
+  @apply fixed;
 }

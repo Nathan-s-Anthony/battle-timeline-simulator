@@ -6,6 +6,7 @@ function App() {
     <BattleMap
       API_KEY={import.meta.env.VITE_MAPTILER_KEY}
       workerUrl={workerUrl}
+      height={220}
       classes={{
         classHeading: "text-4xl",
         classPara: "text-sm",

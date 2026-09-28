@@ -1,1 +1,1 @@
-export  { BattleMap  } from "./map/battleMap";
+export  { BattleMap  } from "./components/map/battleMap";
