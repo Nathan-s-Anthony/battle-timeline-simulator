@@ -14,7 +14,7 @@ export default function Panel({
   const simulationRef = useRef<HTMLDivElement>(null);
   const [mode, setMode] = useState(defaultConfig.mode);
   const [speed, setSpeed] = useState(
-    defaultConfig.simulationDefaultConfig.simulationSpeed,
+    defaultConfig.simulationDefaultConfig.simulationSpeed || "",
   );
   const [extras, setExtras] = useState(
     defaultConfig.simulationDefaultConfig.simulationExtras,
@@ -25,11 +25,18 @@ export default function Panel({
   const [toggleSimulation, setToggleSimulation] = useState<boolean | undefined>(
     false,
   );
-  const [speedSimulation, setSimulationSpeed] = useState<string | undefined>(
+  const [simulationSpeed, setSimulationSpeed] = useState<string | undefined>(
     "",
   );
 
   const [toggleModal, setToggleModal] = useState<boolean>(false);
+  const [simulationMode, setSimulationMode] = useState(defaultConfig.mode);
+  const [simulationFinalSettings, setSimulationFinalSettings] = useState({
+    mode: mode,
+    speed: simulationSpeed,
+    extras: {},
+  });
+
   useEffect(() => {
     if (!simulationRef) return;
     const simulation = simulationRef.current?.querySelector("#simulation");
@@ -59,7 +66,7 @@ export default function Panel({
     } else if (!toggleSimulation) {
       btn.classList.remove("active");
     }
-  }, [toggleModal, toggleSimulation, speedSimulation]);
+  }, [toggleModal, toggleSimulation, simulationSpeed]);
   const defaultSpeed = defaultConfig.simulationDefaultConfig.simulationSpeed;
   const defaultDate = defaultConfig.simulationDefaultConfig.simulationDate;
   const defaultExtras = defaultConfig.simulationDefaultConfig.simulationExtras;
@@ -76,12 +83,17 @@ export default function Panel({
       setToggleSimulation(false);
     }
 
+    setSimulationFinalSettings({
+      mode: mode,
+      speed: speed,
+      extras: extras,
+    });
     // const constructFinalSimData = {
     //   mode: mode,
     //   speed: speed,
     //   extras: extras,
     // };
-    // console.log(constructFinalSimData, "final data ");
+    console.log(simulationFinalSettings, "final data ");
   };
   const speeds = simulationRef.current?.querySelectorAll(".simulation-speed");
 
@@ -104,8 +116,9 @@ export default function Panel({
     const extras =
       simulationRef.current?.querySelectorAll(".simulation-extras");
     extras?.forEach((extra) => {
-      extra.toggleAttribute("");
+      // setExtras(extra.attributes.getNamedItem(""));
     });
+
     e.currentTarget.classList.add("active");
   };
   const configPanel = simulationRef.current?.querySelector(".config-panel");
@@ -117,11 +130,11 @@ export default function Panel({
   return (
     <div
       ref={simulationRef}
-      className=" bg-background flex  relative flex-col justify-between w-12/12 z-60 lg:w-4/12 px-8"
+      className=" bg-background flex  relative flex-col z-60 justify-between w-12/12 h-100 lg:w-4/12 px-8"
       id="simulation"
     >
-      <div className="">
-        <div className="absolute top-5 left-5 items-center rounded-md right-5 text-secondary cursor-pointer flex justify-end gap-5">
+      <div className="flex h-full flex-col">
+        {/* <div className="absolute top-5 left-5 items-center rounded-md right-5 text-secondary cursor-pointer flex justify-end gap-5">
           <div className="absolute  z-50 right-0 top-8 w-50 h-50 hidden config-panel bg-secondary">
             {configs.map((config) => {
               return (
@@ -157,7 +170,7 @@ export default function Panel({
               d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
             />
           </svg>
-        </div>
+        </div> */}
         <div className=" flex flex-col  justify-evenly h-2/4 border-b border-primary/60 ">
           <div className="text-inherit ">
             <span className="text-secondary text-shadow-xl">
@@ -176,13 +189,17 @@ export default function Panel({
             </div>
           </div>
           <div className="flex   justify-between gap-4 ">
-            <div className={`w-2/4`}>
+            <div className={` w-2/4`}>
               <button
                 id="historical"
                 onClick={(e) => setMode("historical")}
-                className={`px-6 py-4 w-full ${mode === "historical" ? "bg-secondary text-foreground border-secondary" : "text-primary border border-primary"} cursor-pointer simulation-mode   text-shadow-xl`}
+                className={` flex items-center gap-2 text-sm px-6 py-4 w-full ${mode === "historical" ? "bg-secondary text-foreground border-secondary" : "text-primary border border-primary"} cursor-pointer simulation-mode   text-shadow-xl`}
               >
-                HISTORICAL
+                <span className="relative flex size-3 ">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
+                  <span className="relative inline-flex size-3 rounded-full bg-background"></span>
+                </span>
+                <span>HISTORICAL</span>
               </button>
             </div>
             <div className="w-2/4">
@@ -190,69 +207,68 @@ export default function Panel({
                 disabled={toggleSimulation}
                 onClick={(e) => setMode("experimental")}
                 id="experimental"
-                className={`${mode === "experimental" ? "bg-secondary text-foreground border-secondary" : "text-primary border border-primary"}  px-6 py-4 w-full cursor-pointer simulation-mode  text-primary text-shadow-xl`}
+                className={` text-sm ${mode === "experimental" ? "bg-secondary text-foreground border-secondary" : "text-primary border border-primary"}  px-6 py-4 w-full cursor-pointer simulation-mode  text-primary text-shadow-xl`}
               >
                 EXPERIMENTAL
               </button>
             </div>
           </div>
         </div>
-        <div className=" flex flex-col relative justify-evenly h-4/4  ">
-          <h4 className="text-secondary  uppercase text-shadow-xl">
-            Simulation Settings
-          </h4>
-          <div
-            className={`absolute bg-background/80 flex justify-center items-center bottom-30 left-0 right-0 h-8/12 simulation-running-screen duration-300 transition-all ${toggleSimulation ? "block" : "hidden"}`}
-          >
-            <span className="text-xs z-60 text-primary">
-              Settings disabled while simulation is running
-            </span>
-          </div>
-          <select className="simulation-date border border-secondary text-shadow-xl px-2 bg-none text-primary font-mono-alt text-lg w-full  py-4">
-            <option value={`${defaultDate.start}-${defaultDate.end}`}>
-              {defaultDate.start} - {defaultDate.end}
-            </option>
-          </select>
-          <div className="flex justify ">
-            {defaultSpeed.map((speed, id) => {
-              return (
-                <div
-                  simulation-speed={speed.value}
-                  onClick={(e) => handleSpeedChange(e)}
-                  simulation-default={speed.default}
-                  className="text-shadow-xl cursor-pointer simulation-speed text-primary w-full text-center px-4 py-2 border border-primary"
-                  key={`${speed.label}-${speed.value}-${id}`}
-                >
-                  <span>{speed.label}</span>
-                </div>
-              );
-            })}
-          </div>
-          <div className="flex justify-between w-full flex-col gap-2 text-primary text-sm">
-            {defaultExtras.map((extra) => {
-              return (
-                <div
-                  onClick={(e) => handleExtrasChange(e)}
-                  simulation-default={extra.default}
-                  simulation-extra-label={extra.label}
-                  simulation-extra-value={`setting-${extra.enabled}`}
-                  key={extra.label}
-                  className="simulation-extras  uppercase cursor-pointer flex gap-4 border-b border-primary justify-between py-2 "
-                >
-                  <span>{extra.label}</span>
-                  <button className="text-secondary uppercase">
-                    <div className={`w-20 flex justify-between `}>
-                      <span className={`${extra.enabled ? "on-extra" : ""}`}>
-                        ON
-                      </span>
-                      <span className={`${!extra.enabled ? "off-extra" : ""}`}>
-                        OFF
-                      </span>
-                    </div>
-                  </button>
-                </div>
-              );
-            })}
+        <div className=" flex flex-col relative justify-start mt-4  flex-1  gap-8 h-full ">
+          <div className="flex justify-between flex-col gap-4 relative">
+            <h4 className="text-secondary uppercase text-shadow-xl">
+              Simulation Settings
+            </h4>
+            <div
+              className={`absolute bg-background/80 flex justify-center items-center bottom-30 left-0 right-0 h-8/12 simulation-running-screen duration-300 transition-all ${toggleSimulation ? "block" : "hidden"}`}
+            >
+              <span className="text-xs z-60 text-primary">
+                Settings disabled while simulation is running
+              </span>
+            </div>
+
+            <div className="flex justify ">
+              {defaultSpeed.map((speed, id) => {
+                return (
+                  <div
+                    simulation-speed={speed.value}
+                    onClick={(e) => handleSpeedChange(e)}
+                    simulation-default={speed.default}
+                    className="text-shadow-xl cursor-pointer simulation-speed text-primary w-full text-center px-4 py-2 border border-primary"
+                    key={`${speed.label}-${speed.value}-${id}`}
+                  >
+                    <span>{speed.label}</span>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="flex justify-between w-full flex-col gap-2 text-primary text-sm">
+              {defaultExtras.map((extra) => {
+                return (
+                  <div
+                    onClick={(e) => handleExtrasChange(e)}
+                    simulation-default={extra.default}
+                    simulation-extra-label={extra.label}
+                    simulation-extra-value={`extra-${extra.enabled}`}
+                    key={extra.label}
+                    simulation-label-switch={`extra-${extra.labelSwitch}`}
+                    className="simulation-extras  uppercase cursor-pointer flex gap-4 border-b border-primary justify-between py-2 "
+                  >
+                    <span>{extra.label}</span>
+                    <button className="text-secondary uppercase">
+                      <div className={`w-20 flex justify-between `}>
+                        <span
+                          className={`${extra.enabled ? "on-extra" : "off-extra "} `}
+                        >
+                          {extra.labelSwitch}
+                        </span>
+                      </div>
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
           </div>
           <div>
             <button
@@ -301,6 +317,7 @@ export default function Panel({
                 </span>
               </div>
             </button>
+            <Results />
           </div>
         </div>
       </div>
@@ -312,14 +329,15 @@ export default function Panel({
       >
         <div className="flex h-full flex-col items-center justify-center gap-4">
           <h4 className="text-primary">Confirm Settings:</h4>
-          <div className="text-2xl">
+          <div className="text-2xl flex flex-col">
             <span className="text-primary">Mode:{mode}</span>
-            <span className="text-primary">Speed:{speedSimulation}</span>
+            <span className="text-primary">Speed:{simulationSpeed}</span>
+            <span className="text-primary">Extras:{extras.labelSwitch}</span>
           </div>
         </div>
       </Modal>
-      <div className="absolute p-2 top-0 left-3/12 ml-4 z-10">
-        <div className="flex gap-4 items-center bg-secondary p-2">
+      <div className="fixed bg-red-500 z-60 w-2/4 mx-auto left-5 right-0 p-2 top-0  flex items-center justify-start ">
+        <div className="flex gap-4 items-center bg-secondary w-50 p-2">
           <span className="relative flex size-3 ">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
             <span className="relative inline-flex size-3 rounded-full bg-background"></span>
@@ -329,7 +347,6 @@ export default function Panel({
           </span>
         </div>
       </div>
-      <Results />
     </div>
   );
 }

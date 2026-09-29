@@ -50,25 +50,27 @@ export const cassinoSimulationDefaultSetting: SimulationTypes[] = [
               {
                 default:1,
             label:" fog",
+            labelSwitch:"ON",
    
                 enabled:true,
         },
         {
             label:" morale",
-
+  labelSwitch:"ON",
                 enabled:true,
         },
         {
                      label:"supply",
-
+  labelSwitch:"ON",
                 enabled:false,
         },
         {
                     label:" weather",
-  
+    labelSwitch:"OFF",
                 enabled:true,
         },
         {
+            labelSwitch:"ON",
                     label:" terrain",
 
                 enabled:false,

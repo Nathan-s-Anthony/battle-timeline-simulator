@@ -29,6 +29,7 @@ value:number
 type SimulationExtrasTypes={
 default?:number;
 label:string;
+labelSwitch :"ON" | "OFF",
 enabled:boolean;
 }
 
