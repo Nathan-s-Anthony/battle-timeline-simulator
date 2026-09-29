@@ -1,6 +1,5 @@
-import Map, { Layer, Source } from "react-map-gl/maplibre";
-
 import "maplibre-gl/dist/maplibre-gl.css";
+import Map, { Layer, Source } from "react-map-gl/maplibre";
 import { setWorkerUrl } from "maplibre-gl";
 import { BATTLE_TIMELINE_SIMULATOR_VERSION } from "../../types/version";
 import "../../output.css";
@@ -9,30 +8,11 @@ import { cassinoSimulationDefaultSetting } from "../../data/simulations/battles/
 import { SimulationTypes } from "../../types/simulation/simulation";
 import Panel from "../panel";
 import Results from "../results";
-const geojson = {
-  type: "FeatureCollection",
-  features: [
-    {
-      type: "Feature",
-      geometry: { type: "Point", coordinates: [13.81, 41.49] },
-    },
-  ],
-};
-
-const layerStyle = {
-  id: "point",
-  type: "circle",
-  paint: {
-    "circle-radius": 10,
-    "circle-color": "#007cbf",
-  },
-};
 
 export function BattleMap({
   API_KEY,
   workerUrl,
   classes,
-  height,
 }: {
   API_KEY: string;
   workerUrl?: string;
@@ -43,38 +23,14 @@ export function BattleMap({
       classConfigure: string;
     };
   };
-  height?: number;
 }) {
   const [simulationSettingsDefault, setSimulationSettingsDefault] = useState<
     SimulationTypes[]
   >(cassinoSimulationDefaultSetting);
-
-  // setSimulationSettingsDefault();
-  // const [defaults] = useState(
-  //   simulationSettingsDefault.flatMap((defaults) => {
-  //     return {
-  //       ...defaults,
-  //     };
-  //   }),
-  // );
-  // console.log(defaults, "speeds default");
-  // const [defaultSettings, setDefaultSettings] =
-  //   useState<SimulationDefaultSettingTypes>({
-  //     simulation: {
-  //       simulationDate: {
-  //         start: defaults[0].simulationDate.start,
-  //         end: defaults[0].simulationDate.end,
-  //       },
-  //       simulationSpeed: defaults[0].simulationSpeed,
-  //       simulationExtras: defaults[0].simulationExtras,
-  //     },
-  //   });
   const [defaultSettings, setDefaultSettings] = useState({});
-  const simulationRef = useRef<HTMLDivElement>(null);
   if (workerUrl) {
     setWorkerUrl(workerUrl);
   }
-
   useEffect(() => {
     setDefaultSettings({
       simulation: {
@@ -96,8 +52,34 @@ export function BattleMap({
   const defaultExtras =
     simulationSettingsDefault[0].simulationDefaultConfig.simulationExtras;
 
+  if (workerUrl) {
+    setWorkerUrl(workerUrl);
+  }
+  const geojson = {
+    type: "FeatureCollection",
+    features: [
+      {
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [13.81, 41.49] },
+      },
+    ],
+  };
+
+  const layerStyle = {
+    id: "point",
+    type: "circle",
+    paint: {
+      "circle-radius": 10,
+      "circle-color": "#007cbf",
+    },
+  };
+
   return (
-    <Panel defaultConfig={simulationSettingsDefault[0]} additionalConfigs={[]}>
+    <div className="flex">
+      <Panel
+        defaultConfig={simulationSettingsDefault[0]}
+        additionalConfigs={[]}
+      />
       <Map
         initialViewState={{
           longitude: 13.81,
@@ -114,6 +96,6 @@ export function BattleMap({
           <Layer {...layerStyle} />
         </Source>
       </Map>
-    </Panel>
+    </div>
   );
 }

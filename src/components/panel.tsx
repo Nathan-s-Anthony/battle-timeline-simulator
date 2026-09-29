@@ -7,11 +7,9 @@ import Modal from "./modal";
 export default function Panel({
   defaultConfig,
   additionalConfigs,
-  children,
 }: {
   defaultConfig: SimulationTypes;
   additionalConfigs: [];
-  children: React.ReactNode;
 }) {
   const simulationRef = useRef<HTMLDivElement>(null);
   const [mode, setMode] = useState(defaultConfig.mode);
@@ -30,6 +28,7 @@ export default function Panel({
   const [speedSimulation, setSimulationSpeed] = useState<string | undefined>(
     "",
   );
+
   const [toggleModal, setToggleModal] = useState<boolean>(false);
   useEffect(() => {
     if (!simulationRef) return;
@@ -118,10 +117,10 @@ export default function Panel({
   return (
     <div
       ref={simulationRef}
-      className="flex lg:flex-nowrap flex-wrap"
+      className=" bg-background flex  relative flex-col justify-between w-12/12 z-60 lg:w-4/12 px-8"
       id="simulation"
     >
-      <div className=" bg-background flex  relative flex-col justify-between w-12/12 z-60 lg:w-4/12 px-8">
+      <div className="">
         <div className="absolute top-5 left-5 items-center rounded-md right-5 text-secondary cursor-pointer flex justify-end gap-5">
           <div className="absolute  z-50 right-0 top-8 w-50 h-50 hidden config-panel bg-secondary">
             {configs.map((config) => {
@@ -305,7 +304,6 @@ export default function Panel({
           </div>
         </div>
       </div>
-      <div className="w-12/12">{children}</div>
       <Modal
         setToggleModal={setToggleModal}
         setToggleSimulation={setToggleSimulation}
