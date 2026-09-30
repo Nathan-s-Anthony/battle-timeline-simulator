@@ -9,7 +9,7 @@ export default function InfoPanel({
 }) {
   console.log(name, "name battle");
   return (
-    <div className="">
+    <div className="relative">
       <span className="text-secondary text-shadow-xl">
         BATTLE TIMELINE SIMULATION
       </span>
