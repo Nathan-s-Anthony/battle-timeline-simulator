@@ -81,7 +81,7 @@ export default function SettingsPanel({
       </div>
       <div className="flex flex-col justify-center">
         {conditions.map((condition) => {
-          const active = condition.enabled;
+          const active = condition.toggleEnabled;
           return (
             <div
               key={condition.name}

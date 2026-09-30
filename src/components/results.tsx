@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 export default function Results() {
   const resultsRef = useRef<HTMLDivElement>(null);
-  const [toggleResultsPanel, setToggleResultsPanel] = useState<boolean>(false);
+  const [toggleResultsPanel, setToggleResultsPanel] = useState<boolean>(true);
 
   const handleResultsMenu = () => {
     setToggleResultsPanel(!toggleResultsPanel);

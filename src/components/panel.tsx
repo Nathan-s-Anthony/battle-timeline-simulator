@@ -40,7 +40,7 @@ export default function Panel({
   return (
     <div
       ref={simulationRef}
-      className={`bg-background flex absolute transition-all duration-300 left-0 top-10  h-fit  flex-col z-60 justify-between  ${toggleSidePanel ? "-translate-x-full" : "translate-x-0"}  p-10`}
+      className={`bg-background flex absolute transition-all duration-300 left-0 top-10  h-fit w-12/12 lg:w-3/12  flex-col z-60 justify-between  ${toggleSidePanel ? "-translate-x-full" : "translate-x-0"}  p-10`}
       id="simulation"
     >
       <div
