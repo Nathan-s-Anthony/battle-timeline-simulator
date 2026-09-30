@@ -11,8 +11,8 @@ export default function Results() {
     chevron.classList.toggle("rotate-180");
   };
   return (
-    <div className="" ref={resultsRef}>
-      <div className="">
+    <div className="absolute right-0 top-50" ref={resultsRef}>
+      <div className="bg-red-500 w-100 top-50">
         <h4 className=" text-lg mt-4  text-shadow-2xl text-primary">
           Results:
         </h4>

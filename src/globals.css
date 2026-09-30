@@ -21,6 +21,7 @@
   --font-mono: var(--font-manrope-mono);
   --font-mono-alt: var(--font-dm-mono);
 }
+
 .simulation-speed.active {
   @apply bg-secondary text-foreground;
 }
@@ -36,11 +37,11 @@ button.disabled {
 h1 {
   @apply text-6xl;
 }
-.on-extra {
-  @apply bg-secondary text-foreground px-2;
+.simulation-extra-toggles > .active {
+  @apply bg-secondary border-secondary border text-foreground px-2 py-1;
 }
-.off-extra {
-  @apply bg-secondary text-foreground border border-secondary px-2;
+.simulation-extra-toggles > .inactive {
+  @apply bg-tertiary border-tertiary border px-2 py-1 text-primary;
 }
 .results {
   @apply duration-300 transition-all h-8;

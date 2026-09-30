@@ -75,7 +75,7 @@ export function BattleMap({
   };
 
   return (
-    <div className="flex">
+    <div className="flex relative">
       <Panel
         defaultConfig={simulationSettingsDefault[0]}
         additionalConfigs={[]}
@@ -96,6 +96,7 @@ export function BattleMap({
           <Layer {...layerStyle} />
         </Source>
       </Map>
+      <Results />
     </div>
   );
 }

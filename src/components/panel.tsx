@@ -74,20 +74,15 @@ export default function Panel({
   const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     const btn = simulationRef.current?.querySelector(".simulation-button");
     if (!btn) return;
-    // if (defaultConfig) {
-    //   btn.classList.toggle("active");
-    // }
-    if (defaultConfig && !toggleSimulation) {
-      setToggleModal(true);
-    } else {
-      setToggleSimulation(false);
+    if (defaultConfig) {
+      btn.classList.toggle("active");
     }
 
-    setSimulationFinalSettings({
-      mode: mode,
-      speed: speed,
-      extras: extras,
-    });
+    // setSimulationFinalSettings({
+    //   mode: mode,
+    //   speed: speed,
+    //   extras: extras,
+    // });
     // const constructFinalSimData = {
     //   mode: mode,
     //   speed: speed,
@@ -116,10 +111,10 @@ export default function Panel({
     const extras =
       simulationRef.current?.querySelectorAll(".simulation-extras");
     extras?.forEach((extra) => {
-      // setExtras(extra.attributes.getNamedItem(""));
+      extra.attrib;
     });
 
-    e.currentTarget.classList.add("active");
+    // e.currentTarget.classList.add("active");
   };
   const configPanel = simulationRef.current?.querySelector(".config-panel");
   const toggleOpenConfigMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -130,65 +125,25 @@ export default function Panel({
   return (
     <div
       ref={simulationRef}
-      className=" bg-background flex  relative flex-col z-60 justify-between w-12/12 h-100 lg:w-4/12 px-8"
+      className=" bg-background flex  absolute left-0 top-10    flex-col z-60 justify-between  w-12/12 h-fit lg:w-3/12 p-10"
       id="simulation"
     >
-      <div className="flex h-full flex-col">
-        {/* <div className="absolute top-5 left-5 items-center rounded-md right-5 text-secondary cursor-pointer flex justify-end gap-5">
-          <div className="absolute  z-50 right-0 top-8 w-50 h-50 hidden config-panel bg-secondary">
-            {configs.map((config) => {
-              return (
-                <div
-                  className="text-foreground flex justify-between p-2"
-                  key={`${config.name}-list`}
-                >
-                  <span className="">{config.name}</span>
-                  <button className="border border-primary bg-primary px-3 py-1">
-                    Load
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-          <svg
-            onClick={(e) => toggleOpenConfigMenu(e)}
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="size-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-            />
-          </svg>
-        </div> */}
-        <div className=" flex flex-col  justify-evenly h-2/4 border-b border-primary/60 ">
-          <div className="text-inherit ">
-            <span className="text-secondary text-shadow-xl">
-              BATTLE TIMELINE SIMULATION
+      <div className="flex h-full flex-col ">
+        <div className=" flex flex-col  justify-evenly gap-4">
+          <span className="text-secondary text-shadow-xl">
+            BATTLE TIMELINE SIMULATION
+          </span>
+
+          <div className="flex flex-col gap-4 ">
+            <h1 className="text-6xl font-sans text-primary text-shadow-xl">
+              Cassino
+            </h1>
+            <span className="text-primary/40  text-xs text-shadow-xl">
+              Monte Cassino · Italy · 1944
             </span>
-            <div className="flex flex-col  gap-2">
-              <h1 className="text-6xl font-sans text-primary text-shadow-xl">
-                Cassino
-              </h1>
-              <span className="text-primary/40 text-sm text-shadow-xl">
-                Monte Cassino · Italy · 1944
-              </span>
-              <p className="text-primary/40 text-sm text-shadow-xl">
-                Relive the battle timeline from the Cassino Battle.
-              </p>
-            </div>
           </div>
-          <div className="flex   justify-between gap-4 ">
+
+          <div className="flex justify-between gap-4  ">
             <div className={` w-2/4`}>
               <button
                 id="historical"
@@ -197,36 +152,32 @@ export default function Panel({
               >
                 <span className="relative flex size-3 ">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
-                  <span className="relative inline-flex size-3 rounded-full bg-background"></span>
+                  <span className="relative inline-flex size-3 rounded-full bg-primary"></span>
                 </span>
                 <span>HISTORICAL</span>
               </button>
             </div>
-            <div className="w-2/4">
+            <div className="w-2/4 ">
               <button
                 disabled={toggleSimulation}
                 onClick={(e) => setMode("experimental")}
                 id="experimental"
-                className={` text-sm ${mode === "experimental" ? "bg-secondary text-foreground border-secondary" : "text-primary border border-primary"}  px-6 py-4 w-full cursor-pointer simulation-mode  text-primary text-shadow-xl`}
+                className={` flex items-center gap-2 text-sm ${mode === "experimental" ? "bg-secondary text-foreground border-secondary" : "text-primary border border-primary"}  px-6 py-4 w-full cursor-pointer simulation-mode  text-primary text-shadow-xl`}
               >
-                EXPERIMENTAL
+                <span className="relative flex size-3 ">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
+                  <span className="relative inline-flex size-3 rounded-full bg-primary"></span>
+                </span>
+                <span>EXPERIMENTAL</span>
               </button>
             </div>
           </div>
         </div>
-        <div className=" flex flex-col relative justify-start mt-4  flex-1  gap-8 h-full ">
-          <div className="flex justify-between flex-col gap-4 relative">
+        <div className=" border-t border-primary/60 flex flex-col relative justify-start mt-8  flex-1  gap-8 h-full ">
+          <div className="flex justify-between flex-col gap-4 relative mt-4">
             <h4 className="text-secondary uppercase text-shadow-xl">
               Simulation Settings
             </h4>
-            <div
-              className={`absolute bg-background/80 flex justify-center items-center bottom-30 left-0 right-0 h-8/12 simulation-running-screen duration-300 transition-all ${toggleSimulation ? "block" : "hidden"}`}
-            >
-              <span className="text-xs z-60 text-primary">
-                Settings disabled while simulation is running
-              </span>
-            </div>
-
             <div className="flex justify ">
               {defaultSpeed.map((speed, id) => {
                 return (
@@ -247,23 +198,23 @@ export default function Panel({
               {defaultExtras.map((extra) => {
                 return (
                   <div
-                    onClick={(e) => handleExtrasChange(e)}
                     simulation-default={extra.default}
                     simulation-extra-label={extra.label}
                     simulation-extra-value={`extra-${extra.enabled}`}
                     key={extra.label}
-                    simulation-label-switch={`extra-${extra.labelSwitch}`}
-                    className="simulation-extras  uppercase cursor-pointer flex gap-4 border-b border-primary justify-between py-2 "
+                    simulation-label-switch={`${extra.labelSwitch}`}
+                    className="simulation-extras  uppercase  flex gap-4 border-b border-primary justify-between py-2 "
                   >
                     <span>{extra.label}</span>
-                    <button className="text-secondary uppercase">
-                      <div className={`w-20 flex justify-between `}>
-                        <span
-                          className={`${extra.enabled ? "on-extra" : "off-extra "} `}
-                        >
-                          {extra.labelSwitch}
-                        </span>
-                      </div>
+                    <button
+                      onClick={(e) => handleExtrasChange(e)}
+                      className="text-secondary  cursor-pointer  simulation-extra-toggles  uppercase"
+                    >
+                      <span
+                        className={`flex justify-between text-xs ${extra.labelSwitch === "ON" ? "active" : "inactive"}`}
+                      >
+                        {extra.labelSwitch}
+                      </span>
                     </button>
                   </div>
                 );
@@ -317,11 +268,10 @@ export default function Panel({
                 </span>
               </div>
             </button>
-            <Results />
           </div>
         </div>
       </div>
-      <Modal
+      {/* <Modal
         setToggleModal={setToggleModal}
         setToggleSimulation={setToggleSimulation}
         toggleSimulation={toggleSimulation}
@@ -335,14 +285,14 @@ export default function Panel({
             <span className="text-primary">Extras:{extras.labelSwitch}</span>
           </div>
         </div>
-      </Modal>
-      <div className="fixed bg-red-500 z-60 w-2/4 mx-auto left-5 right-0 p-2 top-0  flex items-center justify-start ">
+      </Modal> */}
+      <div className="fixed  z-60 w-full  right-0 p-4 mt-4 top-0  flex items-center justify-end  ">
         <div className="flex gap-4 items-center bg-secondary w-50 p-2">
           <span className="relative flex size-3 ">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
             <span className="relative inline-flex size-3 rounded-full bg-background"></span>
           </span>
-          <span>
+          <span className="text-sm">
             {toggleSimulation ? "Commading forces" : "Awaiting Command"}
           </span>
         </div>
