@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { addTransitionType, useEffect, useRef, useState } from "react";
 import {
   SimulationConfig,
   SimulationConfigSettingConditions,
@@ -6,7 +6,8 @@ import {
 import { BattleConfigs } from "../types/battle/battle";
 import InfoPanel from "./panel/info";
 import SettingsPanel from "./panel/settings";
-import Results from "./results";
+import axios from "axios";
+import { instance } from "../lib/axios";
 
 export default function Panel({
   simConfig,
@@ -22,6 +23,7 @@ export default function Panel({
   const [simSpeed, setSimSpeed] = useState<number>(1);
   const [runSimulator, setRunSimulator] = useState<boolean>(false);
   const [toggleSidePanel, setToggleSidePanel] = useState<boolean>(false);
+  const [battlesDataExpress, setBattlesDataExpress] = useState([]);
   const handleButtonToggle = (conditionName: string) => {
     setConditions((current) => ({
       ...current,
@@ -37,6 +39,18 @@ export default function Panel({
   const handleMenu = () => {
     setToggleSidePanel(!toggleSidePanel);
   };
+
+  useEffect(() => {
+    const getBattles = async () => {
+      const resp = await instance.get("/api/battles");
+      if (resp.data) {
+        console.log("data got");
+        setBattlesDataExpress(resp.data);
+      }
+    };
+    getBattles();
+  }, []);
+
   return (
     <div
       ref={simulationRef}
@@ -62,7 +76,6 @@ export default function Panel({
           />
         </svg>
       </div>
-
       <div className="flex flex-col justify-evenly gap-4">
         <InfoPanel
           name={battlesData[0].data.name}
