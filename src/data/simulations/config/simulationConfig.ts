@@ -1,0 +1,69 @@
+import { SimulationConfig } from "../../../types/simulation/simulationConfig";
+
+export const simulationConfig:SimulationConfig={
+    era:"ww2",
+    simulationConfigSetting:{
+        mode:"historical",
+        buttons:[
+         {
+            default:1,
+            mode:"historical",
+         },
+         {
+            mode:"experimental",
+         }
+        ],
+        speeds:[
+            {
+                default:1,
+                label:"1x",
+                value:1,
+            },
+               {
+                label:"2x",
+                value:2,
+            },
+               {
+                label:"3x",
+                value:3,
+            },
+               {
+                label:"4x",
+                value:4,
+            },
+               {
+                
+                label:"5x",
+                value:5,
+            },
+        ],
+        conditions:[
+            {
+            name:"FOG",
+            toggleLabel:"ON",
+            toggleEnabled:1,
+            },
+              {
+            name:"WEATHER",
+            toggleLabel:"OFF",
+              toggleEnabled:0,
+   
+            },
+            {
+            name:"MORALE",
+            toggleLabel:"ON",
+             toggleEnabled:1,
+            },
+               {
+            name:"SUPPLY",
+            toggleLabel:"ON",
+             toggleEnabled:1,
+            },
+                  {
+            name:"TERRAIN",
+            toggleLabel:"OFF",
+             toggleEnabled:0,
+            }
+        ]
+    }
+}

@@ -1,13 +1,14 @@
-import { cassinoSimulationDefaultSetting } from "./cassino/cassinoSimulation";
-import { normandySimulationDefaultSetting } from "./normandy/normandySimulation";
+import { BattleConfigs } from "../../../../types/battle/battle";
+import { cassinoSimulation } from "./cassino/cassinoSimulation";
+import { normandySimulation } from "./normandy/normandySimulation";
 
-export const configs = [
-   {
-     casino:cassinoSimulationDefaultSetting,
-     name:"Cassino"
-   },
-   {
-     normandy:normandySimulationDefaultSetting,
-     name:"Normandy"
-   }
+export const battleConfigs:BattleConfigs[] =[
+  {
+    name:"Cassino",
+    data:cassinoSimulation,
+  },
+    {
+    name:"Normandy",
+    data:normandySimulation,
+  }
 ]

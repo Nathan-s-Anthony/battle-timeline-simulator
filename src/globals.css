@@ -37,10 +37,10 @@ button.disabled {
 h1 {
   @apply text-6xl;
 }
-.simulation-extra-toggles > .active {
+.simulation-extra-toggles.active {
   @apply bg-secondary border-secondary border text-foreground px-2 py-1;
 }
-.simulation-extra-toggles > .inactive {
+.simulation-extra-toggles.inactive {
   @apply bg-tertiary border-tertiary border px-2 py-1 text-primary;
 }
 .results {

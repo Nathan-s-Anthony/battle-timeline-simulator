@@ -4,10 +4,13 @@ import { setWorkerUrl } from "maplibre-gl";
 import { BATTLE_TIMELINE_SIMULATOR_VERSION } from "../../types/version";
 import "../../output.css";
 import { useEffect, useRef, useState } from "react";
-import { cassinoSimulationDefaultSetting } from "../../data/simulations/battles/ww2/cassino/cassinoSimulation";
-import { SimulationTypes } from "../../types/simulation/simulation";
+import { cassinoSimulation } from "../../data/simulations/battles/ww2/cassino/cassinoSimulation";
 import Panel from "../panel";
 import Results from "../results";
+import { SimulationConfig } from "../../types/simulation/simulationConfig";
+import { simulationConfig } from "../../data/simulations/config/simulationConfig";
+import { normandySimulation } from "../../data/simulations/battles/ww2/normandy/normandySimulation";
+import { battleConfigs } from "../../data/simulations/battles/ww2";
 
 export function BattleMap({
   API_KEY,
@@ -24,34 +27,10 @@ export function BattleMap({
     };
   };
 }) {
-  const [simulationSettingsDefault, setSimulationSettingsDefault] = useState<
-    SimulationTypes[]
-  >(cassinoSimulationDefaultSetting);
-  const [defaultSettings, setDefaultSettings] = useState({});
-  if (workerUrl) {
-    setWorkerUrl(workerUrl);
-  }
-  useEffect(() => {
-    setDefaultSettings({
-      simulation: {
-        ...simulationSettingsDefault,
-      },
-    });
-    if (!defaultSettings) return;
-    console.log(defaultSettings);
-  }, [simulationSettingsDefault]);
-
-  console.log(simulationSettingsDefault, "settings coming thru");
-
-  //
-  const defaultMode = simulationSettingsDefault[0].mode;
-  const defaultDates =
-    simulationSettingsDefault[0].simulationDefaultConfig.simulationDate;
-  const defaultSpeeds =
-    simulationSettingsDefault[0].simulationDefaultConfig.simulationSpeed;
-  const defaultExtras =
-    simulationSettingsDefault[0].simulationDefaultConfig.simulationExtras;
-
+  const [simulationDefaultConfig, setSimulationDefaultConfig] =
+    useState<SimulationConfig>(simulationConfig);
+  const [initializeSimulator, setInitializeSimulator] =
+    useState<boolean>(false);
   if (workerUrl) {
     setWorkerUrl(workerUrl);
   }
@@ -74,12 +53,27 @@ export function BattleMap({
     },
   };
 
+  const startSimulator = () => {
+    console.log("starting simulator....");
+    setSimulationDefaultConfig(simulationConfig);
+    if (!simulationDefaultConfig) return;
+    console.log(simulationDefaultConfig, "New data....");
+  };
+  useEffect(() => {
+    if (!simulationConfig) return;
+    setInitializeSimulator(true);
+    if (!initializeSimulator) return;
+    startSimulator();
+  }, [
+    initializeSimulator,
+    simulationConfig,
+    cassinoSimulation,
+    normandySimulation,
+  ]);
+
   return (
     <div className="flex relative">
-      <Panel
-        defaultConfig={simulationSettingsDefault[0]}
-        additionalConfigs={[]}
-      />
+      <Panel simConfig={simulationDefaultConfig} battlesData={battleConfigs} />
       <Map
         initialViewState={{
           longitude: 13.81,
