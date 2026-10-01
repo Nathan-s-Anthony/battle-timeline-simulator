@@ -35,7 +35,7 @@ button.disabled {
   @apply bg-red-500;
 }
 h1 {
-  @apply text-6xl;
+  @apply text-4xl;
 }
 .simulation-extra-toggles.active {
   @apply bg-secondary border-secondary border text-foreground px-2 py-1;
@@ -52,3 +52,13 @@ h1 {
 .modal.active {
   @apply fixed;
 }
+.campaign-menu{
+  @apply transition-all duration-300;
+}
+.campaign-menu.active{
+  @apply opacity-100 block;
+}
+.campaign-menu.inactive{
+@apply opacity-0 hidden;
+}
+

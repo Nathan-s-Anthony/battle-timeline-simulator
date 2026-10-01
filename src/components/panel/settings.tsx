@@ -31,24 +31,6 @@ export default function SettingsPanel({
   runSimulator: boolean;
   setRunSimulator: Dispatch<SetStateAction<boolean>>;
 }) {
-  // const [toggleSimulation, setToggleSimuation] = useState<boolean>(false);
-
-  // // const handleSpeedChange = (speed: number) => {
-  // //   setSimSpeed(speed);
-  // // };
-  // const [disableSettings, setDisableSettings] = useState<boolean>(false);
-  // // const handleChangeConditions = (conditionName: string) => {
-  // //   setConditions((currentConditions) =>
-  // //     currentConditions.map((condition) =>
-  // //       condition.name === conditionName
-  // //         ? {
-  // //             ...condition,
-  // //             enabled: !condition.enabled,
-  // //           }
-  // //         : condition,
-  // //     ),
-  // //   );
-  // // };
   const handleSimulationStartEnd = async () => {
     if (!runSimulator) {
       // Start simulation
@@ -62,13 +44,6 @@ export default function SettingsPanel({
 
     console.log("simulation stopped...");
   };
-  // useEffect(() => {
-  //   if (toggleSimulation) {
-  //     setDisableSettings(true);
-  //   } else {
-  //     setDisableSettings(false);
-  //   }
-  // }, [toggleSimulation]);
 
   return (
     <div className="flex flex-col justify-evenly gap-4">

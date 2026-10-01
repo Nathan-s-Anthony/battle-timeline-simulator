@@ -15,13 +15,13 @@ export default function InfoPanel({
       <div className="flex flex-col gap-4">
         <div key={`simulation-heading-${name}`}>
           <span className="text-primary/60 text-xs text-shadow-xl">
-            {subHeading}
+            {name ?? "Battle"}{" "}
           </span>
-          <h1 className="text-6xl font-sans text-primary text-shadow-xl">
-            {name}
+          <h1 className="font-sans text-primary text-shadow-xl">
+            {name ?? "Battle"}
           </h1>
           <span className="text-primary/40  text-xs text-shadow-xl">
-            {desc}
+            {name ?? "Battle Description"}
           </span>
         </div>
       </div>
