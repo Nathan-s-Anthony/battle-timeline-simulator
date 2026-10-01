@@ -1,4 +1,11 @@
-import { addTransitionType, useEffect, useRef, useState } from "react";
+import {
+  addTransitionType,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   SimulationConfig,
   SimulationConfigSettingConditions,
@@ -8,48 +15,44 @@ import InfoPanel from "./panel/info";
 import SettingsPanel from "./panel/settings";
 import axios from "axios";
 import { instance } from "../lib/axios";
+import { sendSimuationSettings } from "../actions/simulationSettingsAction";
 
 export default function Panel({
   simConfig,
+  setStop,
+  mode,
+  speed,
+  conditions,
+  setMode,
+  setSimSpeed,
+  setConditions,
+  runSimulator,
+  setRunSimulator,
   battlesData,
 }: {
+  setStop: () => Promise<void>;
   simConfig: SimulationConfig;
+  mode: string;
+  speed: number;
+  conditions: SimulationConfigSettingConditions[];
+  setMode: Dispatch<SetStateAction<"historical" | "experimental">>;
+  setSimSpeed: Dispatch<SetStateAction<number>>;
+  setConditions: Dispatch<SetStateAction<SimulationConfigSettingConditions[]>>;
+  runSimulator: boolean;
+  setRunSimulator: Dispatch<SetStateAction<boolean>>;
   battlesData: BattleConfigs[];
 }) {
-  if (!simConfig) return;
-  const [conditions, setConditions] = useState<
-    SimulationConfigSettingConditions[]
-  >(simConfig.simulationConfigSetting.conditions);
-  const [simSpeed, setSimSpeed] = useState<number>(1);
-  const [runSimulator, setRunSimulator] = useState<boolean>(false);
   const [toggleSidePanel, setToggleSidePanel] = useState<boolean>(false);
-  const [battlesDataExpress, setBattlesDataExpress] = useState([]);
-  const handleButtonToggle = (conditionName: string) => {
-    setConditions((current) => ({
-      ...current,
-    }));
-  };
+
   const simulationRef = useRef<HTMLDivElement>(null);
 
   const handleRunSimulator = () => {
-    setRunSimulator(true);
     console.log("Simulator running...");
   };
 
   const handleMenu = () => {
     setToggleSidePanel(!toggleSidePanel);
   };
-
-  useEffect(() => {
-    const getBattles = async () => {
-      const resp = await instance.get("/api/battles");
-      if (resp.data) {
-        console.log("data got");
-        setBattlesDataExpress(resp.data);
-      }
-    };
-    getBattles();
-  }, []);
 
   return (
     <div
@@ -83,7 +86,18 @@ export default function Panel({
           subHeading={battlesData[0].data.subHeading}
         />
         <div className="border-b border-primary"></div>
-        <SettingsPanel settings={simConfig.simulationConfigSetting} />
+        <SettingsPanel
+          setStop={setStop}
+          setRunSimulator={setRunSimulator}
+          runSimulator={runSimulator}
+          mode={mode}
+          simSpeed={speed}
+          setMode={setMode}
+          setConditions={setConditions}
+          setSimSpeed={setSimSpeed}
+          conditions={conditions}
+          settings={simConfig.simulationConfigSetting}
+        />
       </div>
     </div>
   );

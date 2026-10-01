@@ -1,44 +1,75 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
   SimulationConfig,
+  SimulationConfigSettingConditions,
   SimulationConfigSettings,
 } from "../../types/simulation/simulationConfig";
+import { sendSimuationSettings } from "../../actions/simulationSettingsAction";
+import { startSimulation } from "../../actions/startSimulation";
+import { stopSimulation } from "../../actions/endSimulation";
 
 export default function SettingsPanel({
+  mode,
+  setStop,
+  conditions,
   settings,
+  simSpeed,
+  setMode,
+  setSimSpeed,
+  setConditions,
+  runSimulator,
+  setRunSimulator,
 }: {
+  mode: string;
+  setStop: () => Promise<void>;
+  setMode: Dispatch<SetStateAction<"historical" | "experimental">>;
+  setSimSpeed: Dispatch<SetStateAction<number>>;
+  setConditions: Dispatch<SetStateAction<SimulationConfigSettingConditions>>;
+  simSpeed: number;
   settings: SimulationConfigSettings;
+  conditions: SimulationConfigSettingConditions[];
+  runSimulator: boolean;
+  setRunSimulator: Dispatch<SetStateAction<boolean>>;
 }) {
-  const [simSpeed, setSimSpeed] = useState<number>(1);
-  const [toggleSimulation, setToggleSimuation] = useState<boolean>(false);
-  const [mode, setMode] = useState(settings.mode);
-  const [conditions, setConditions] = useState(settings.conditions);
-  const handleSpeedChange = (speed: number) => {
-    setSimSpeed(speed);
-  };
-  const [disableSettings, setDisableSettings] = useState<boolean>(false);
-  const handleChangeConditions = (conditionName: string) => {
-    setConditions((currentConditions) =>
-      currentConditions.map((condition) =>
-        condition.name === conditionName
-          ? {
-              ...condition,
-              enabled: !condition.enabled,
-            }
-          : condition,
-      ),
-    );
-  };
-  const handleSimulationStartEnd = () => {
-    setToggleSimuation(!toggleSimulation);
-  };
-  useEffect(() => {
-    if (toggleSimulation) {
-      setDisableSettings(true);
-    } else {
-      setDisableSettings(false);
+  // const [toggleSimulation, setToggleSimuation] = useState<boolean>(false);
+
+  // // const handleSpeedChange = (speed: number) => {
+  // //   setSimSpeed(speed);
+  // // };
+  // const [disableSettings, setDisableSettings] = useState<boolean>(false);
+  // // const handleChangeConditions = (conditionName: string) => {
+  // //   setConditions((currentConditions) =>
+  // //     currentConditions.map((condition) =>
+  // //       condition.name === conditionName
+  // //         ? {
+  // //             ...condition,
+  // //             enabled: !condition.enabled,
+  // //           }
+  // //         : condition,
+  // //     ),
+  // //   );
+  // // };
+  const handleSimulationStartEnd = async () => {
+    if (!runSimulator) {
+      // Start simulation
+      setRunSimulator(true);
+      console.log("simulation engine settings set...");
+      return;
     }
-  }, [toggleSimulation]);
+    // Stop simulation
+    await setStop();
+    setRunSimulator(false);
+
+    console.log("simulation stopped...");
+  };
+  // useEffect(() => {
+  //   if (toggleSimulation) {
+  //     setDisableSettings(true);
+  //   } else {
+  //     setDisableSettings(false);
+  //   }
+  // }, [toggleSimulation]);
+
   return (
     <div className="flex flex-col justify-evenly gap-4">
       <div className="flex gap-2">
@@ -51,7 +82,7 @@ export default function SettingsPanel({
               className="w-full simulation-buttons"
             >
               <button
-                disabled={disableSettings}
+                disabled={runSimulator}
                 type="button"
                 className={`uppercase border flex items-center gap-2 text-sm px-6 py-4 w-full cursor-pointer simulation-mode text-shadow-xl ${
                   active
@@ -69,7 +100,7 @@ export default function SettingsPanel({
         {settings.speeds.map((speed) => {
           return (
             <button
-              disabled={disableSettings}
+              disabled={runSimulator}
               key={`simulation-speed-${speed.label}`}
               onClick={() => setSimSpeed(speed.value)}
               className={`${simSpeed === speed.value ? "active" : ""} text-shadow-xl cursor-pointer simulation-speed text-primary w-full text-center px-4 py-2 border border-primary`}
@@ -80,7 +111,7 @@ export default function SettingsPanel({
         })}
       </div>
       <div className="flex flex-col justify-center">
-        {conditions.map((condition) => {
+        {settings.conditions.map((condition) => {
           const active = condition.toggleEnabled;
           return (
             <div
@@ -91,8 +122,8 @@ export default function SettingsPanel({
                 {condition.name}
               </span>
               <button
-                onClick={() => handleChangeConditions(condition.name)}
-                disabled={disableSettings}
+                // onClick={() => handleChangeConditions(condition.name)}
+                disabled={runSimulator}
                 type="button"
                 className={`text-secondary  cursor-pointer simulation-extra-toggles text-xs uppercase ${
                   active ? "active" : "inactive"
@@ -105,11 +136,11 @@ export default function SettingsPanel({
         })}
       </div>
       <button
-        onClick={() => handleSimulationStartEnd()}
-        className={`${toggleSimulation ? "active" : ""} simulation-button transition-all mt-4 duration-300  bg-secondary cursor-pointer text-foreground px-4 py-6 w-full`}
+        onClick={handleSimulationStartEnd}
+        className={` ${runSimulator ? "active" : ""} simulation-button transition-all mt-4 duration-300  bg-secondary cursor-pointer text-foreground px-4 py-6 w-full`}
       >
         <div className="flex gap-4 w-full justify-center">
-          {toggleSimulation ? (
+          {runSimulator ? (
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -145,9 +176,7 @@ export default function SettingsPanel({
               />
             </svg>
           )}
-          <span className="">
-            {!toggleSimulation ? "Run" : "Stop"} Simulation
-          </span>
+          <span className="">{!runSimulator ? "Run" : "Stop"} Simulation</span>
         </div>
       </button>
     </div>

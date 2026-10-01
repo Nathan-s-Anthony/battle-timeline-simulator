@@ -1,16 +1,19 @@
 import { useEffect, useRef, useState } from "react";
+import { instance } from "../lib/axios";
 
 export default function Results() {
   const resultsRef = useRef<HTMLDivElement>(null);
   const [toggleResultsPanel, setToggleResultsPanel] = useState<boolean>(true);
+  const [battlesDataExpress, setBattlesDataExpress] = useState([]);
 
   const handleResultsMenu = () => {
     setToggleResultsPanel(!toggleResultsPanel);
   };
+
   return (
     <div className="absolute overflow-hidden right-0 bottom-18">
       <div
-        className={`bg-background flex  transition-all duration-300  relative  flex-col  justify-between  w-12/12 lg:w-4/12 ml-auto  ${toggleResultsPanel ? "translate-x-full" : "-translate-x-0"}`}
+        className={`bg-background flex  transition-all duration-300  relative  flex-col  justify-between  w-12/12 lg:w-4/12 ml-auto ${toggleResultsPanel ? "translate-x-full" : ""}  `}
         ref={resultsRef}
       >
         <div
@@ -37,15 +40,10 @@ export default function Results() {
           <h2 className="text-6xl font-sans text-primary text-shadow-xl w-full text-shadow-2xl ">
             Results
           </h2>
-          <div className="min-h-100 w-full">
-            <p className="text-primary/80 text-sm ">
-              lorem ipsum dolor sit amet consectetur adipiscing elit non
-              temporibus eiusmod dolor cum enim occaecat duis consectetur et
-              rerum expedita pariatur quo esse cupiditate ullamco et quo non
-              animi nam id anim aliqua anim minus cupidatat in aut deserunt
-              deleniti odio elit deserunt ut animi cupidatat velit fugiat sit
-              cumque
-            </p>
+          <div className="min-h-100 w-250">
+            <div className="text-primary">
+              {battlesDataExpress.message ?? "Loading"}
+            </div>
           </div>
         </div>
       </div>

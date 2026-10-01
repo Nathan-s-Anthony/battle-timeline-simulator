@@ -7,7 +7,6 @@ export default function InfoPanel({
   desc: string;
   subHeading: string;
 }) {
-  console.log(name, "name battle");
   return (
     <div className="relative">
       <span className="text-secondary text-shadow-xl">

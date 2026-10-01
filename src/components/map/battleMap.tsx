@@ -1,5 +1,5 @@
 import "maplibre-gl/dist/maplibre-gl.css";
-import Map, { Layer, Source } from "react-map-gl/maplibre";
+import Map, { Layer, MapRef, Source } from "react-map-gl/maplibre";
 import { setWorkerUrl } from "maplibre-gl";
 import { BATTLE_TIMELINE_SIMULATOR_VERSION } from "../../types/version";
 import "../../output.css";
@@ -11,6 +11,9 @@ import { SimulationConfig } from "../../types/simulation/simulationConfig";
 import { simulationConfig } from "../../data/simulations/config/simulationConfig";
 import { normandySimulation } from "../../data/simulations/battles/ww2/normandy/normandySimulation";
 import { battleConfigs } from "../../data/simulations/battles/ww2";
+import { startSimulation } from "../../actions/startSimulation";
+import { stopSimulation } from "../../actions/endSimulation";
+import { initializeSimulation } from "../../actions/initializeSimulation";
 
 export function BattleMap({
   API_KEY,
@@ -29,8 +32,25 @@ export function BattleMap({
 }) {
   const [simulationDefaultConfig, setSimulationDefaultConfig] =
     useState<SimulationConfig>(simulationConfig);
-  const [initializeSimulator, setInitializeSimulator] =
-    useState<boolean>(false);
+
+  const [mode, setMode] = useState(
+    simulationDefaultConfig.simulationConfigSetting.mode,
+  );
+  const [conditions, setConditions] = useState(
+    simulationDefaultConfig.simulationConfigSetting.conditions,
+  );
+  const [simSpeed, setSimSpeed] = useState<number>(1);
+  const [runSimulator, setRunSimulator] = useState<boolean>(false);
+  const [initialMapZoom, setInitialMapZoom] = useState();
+  const [stop, setStop] = useState(false);
+  const mapRef = useRef<MapRef>(null);
+  const [viewState, setViewState] = useState({
+    longitude: 12.5,
+    latitude: 42.5,
+    zoom: 8,
+  });
+  const [mapReady, setMapReady] = useState<boolean>(false);
+  const [initializeSimulator, setinitializeSimulator] = useState(false);
   if (workerUrl) {
     setWorkerUrl(workerUrl);
   }
@@ -53,33 +73,97 @@ export function BattleMap({
     },
   };
 
-  const startSimulator = () => {
-    console.log("starting simulator....");
-    setSimulationDefaultConfig(simulationConfig);
-    if (!simulationDefaultConfig) return;
-    console.log(simulationDefaultConfig, "New data....");
+  const resetMap = (long: number, lat: number, zoom: number) => {
+    mapRef.current?.flyTo({
+      center: [long, lat],
+      zoom: zoom,
+      duration: 1000,
+      essential: true,
+    });
   };
-  useEffect(() => {
-    if (!simulationConfig) return;
-    setInitializeSimulator(true);
-    if (!initializeSimulator) return;
-    startSimulator();
-  }, [
-    initializeSimulator,
-    simulationConfig,
-    cassinoSimulation,
-    normandySimulation,
-  ]);
 
+  useEffect(() => {
+    if (!mapReady) return;
+    const bootEngine = async () => {
+      // 1. Initialize engine
+      const initEngine = await initializeSimulation();
+      console.log(initEngine, "engine initialized");
+      // 2. Reset / prepare simulation
+      if (initEngine?.data?.initialView) {
+        const initInitialView = initEngine?.data?.initialView;
+        console.log(initInitialView, "init initial view");
+        resetMap(
+          initInitialView.longitude,
+          initInitialView.latitude,
+          initInitialView.zoom,
+        );
+      }
+    };
+    bootEngine();
+  }, [mapReady]);
+  useEffect(() => {
+    if (!runSimulator) return;
+
+    const startEngine = async () => {
+      try {
+        const resp = await startSimulation(mode, simSpeed, conditions);
+        if (resp) {
+          const initInitialView = resp?.data?.initialView;
+          console.log(initInitialView, "start initial view");
+          resetMap(
+            initInitialView.longitude,
+            initInitialView.latitude,
+            initInitialView.zoom,
+          );
+        }
+      } catch (error) {
+        console.error("Failed to start simulation:", error);
+        throw error;
+      }
+    };
+
+    startEngine();
+  }, [runSimulator]);
+
+  const stopEngine = async () => {
+    try {
+      const resp = await stopSimulation(1);
+      if (resp) {
+        const initInitialView = resp?.data?.initialView;
+        console.log(initInitialView, "end");
+        resetMap(
+          initInitialView.longitude,
+          initInitialView.latitude,
+          initInitialView.zoom,
+        );
+      }
+    } catch (error) {
+      console.error("Failed to stop simulation:", error);
+      throw error;
+    }
+  };
+
+  const initialViewState = initialMapZoom && initialMapZoom.data.initialView;
+  console.log(initialViewState, "initial data");
   return (
     <div className="flex relative">
-      <Panel simConfig={simulationDefaultConfig} battlesData={battleConfigs} />
+      <Panel
+        setStop={stopEngine}
+        simConfig={simulationDefaultConfig}
+        runSimulator={runSimulator}
+        setRunSimulator={setRunSimulator}
+        setMode={setMode}
+        setConditions={setConditions}
+        setSimSpeed={setSimSpeed}
+        mode={mode}
+        speed={simSpeed}
+        conditions={conditions}
+        battlesData={battleConfigs}
+      />
       <Map
-        initialViewState={{
-          longitude: 13.81,
-          latitude: 41.49,
-          zoom: 10,
-        }}
+        // onMove={(evt) => setViewState(evt.viewState)}
+        ref={mapRef}
+        onLoad={() => setMapReady(true)}
         style={{
           width: "100%",
           height: "100vh",
