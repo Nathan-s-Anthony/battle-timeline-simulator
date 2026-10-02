@@ -1,5 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 @import "tailwindcss";
-
 :root {
   --base-font-size: 16px;
   --background: #10171a;
@@ -21,7 +21,12 @@
   --font-mono: var(--font-manrope-mono);
   --font-mono-alt: var(--font-dm-mono);
 }
-
+html {
+  font-family: 'Space Mono', monospace;
+  font-size: var(--base-font-size);
+  background-color: var(--background);
+  color: var(--foreground);
+}
 .simulation-speed.active {
   @apply bg-secondary text-foreground;
 }

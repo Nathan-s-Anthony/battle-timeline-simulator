@@ -1,0 +1,17 @@
+export type UnitRole =
+  | "infantry"
+  | "armored"
+  | "mechanized_infantry"
+  | "cavalry"
+  | "artillery"
+  | "airborne"
+  | "mountain"
+  | "engineer"
+  | "reconnaissance"
+  | "anti_tank"
+  | "anti_aircraft"
+  | "special_forces"
+  | "naval"
+  | "air"
+  | "mixed"
+  | "support";

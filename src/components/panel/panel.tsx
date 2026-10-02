@@ -6,17 +6,11 @@ import {
   useRef,
   useState,
 } from "react";
-import {
-  SimulationConfig,
-  SimulationConfigSettingConditions,
-} from "../../types/simulation/simulationConfig";
-import { BattleConfigs } from "../../types/battle/battle";
+
 import InfoPanel from "./info";
 import SettingsPanel from "./settings";
-import axios from "axios";
-import { instance } from "../../lib/axios";
-import { sendSimuationSettings } from "../../actions/simulationSettingsAction";
-import { CampaignTypes, WarTypes } from "../../types/war/warTypes";
+import { CampaignTypes } from "../../types/war/warTypes";
+import { BATTLE_TIMELINE_SIMULATOR_VERSION } from "../../types/version";
 
 export default function Panel({
   simConfig,
@@ -50,8 +44,6 @@ export default function Panel({
   setActiveCampaign: Dispatch<SetStateAction<CampaignTypes | null>>;
   campaigns: CampaignTypes[];
   activeCampaign: CampaignTypes | null;
-
-  // setActiveCampaign: Dispatch<SetStateAction<CampaignTypes[]>>;
 }) {
   const [toggleSidePanel, setToggleSidePanel] = useState<boolean>(false);
   const simulationRef = useRef<HTMLDivElement>(null);
@@ -66,9 +58,13 @@ export default function Panel({
   return (
     <div
       ref={simulationRef}
-      className={`bg-background flex absolute transition-all duration-300 left-0 top-10   w-6/12 lg:w-3/12  flex-col z-60 justify-between  ${toggleSidePanel ? "-translate-x-full" : "translate-x-0"}  p-10`}
+      className={`bg-background flex absolute transition-all duration-300 left-0 top-30   w-6/12 lg:w-3/12  flex-col z-60 justify-between  ${toggleSidePanel ? "-translate-x-full" : "translate-x-0"}  p-10`}
       id="simulation"
     >
+      <span className="absolute text-primary/60 left-10 top-2 text-xs ">
+        {BATTLE_TIMELINE_SIMULATOR_VERSION}
+      </span>
+
       <div className="absolute  text-primary right-5 top-5">
         <svg
           onClick={() => setToggleCampaignMenu(!toggleCampaignMenu)}

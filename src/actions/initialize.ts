@@ -1,5 +1,4 @@
 import { instance } from "../lib/axios";
-import { SimulationConfigSettingConditions } from "../types/simulation/simulationConfig";
 
 export async function initializeSimulation() {
   try {

@@ -1,0 +1,15 @@
+export type UnitType =
+  | "army"
+  | "army_group"
+  | "corps"
+  | "division"
+  | "brigade"
+  | "regiment"
+  | "battalion"
+  | "company"
+  | "battery"
+  | "squadron"
+  | "platoon"
+  | "troop"
+  | "section"
+  | "squad";

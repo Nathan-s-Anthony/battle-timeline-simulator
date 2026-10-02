@@ -1,7 +1,6 @@
 export const locationLayerStyle = {
   id: "cassino-locations",
   type: "circle" as const,
-
   paint: {
     "circle-radius": 7,
     "circle-color": "#007cbf",

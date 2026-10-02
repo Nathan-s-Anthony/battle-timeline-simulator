@@ -1,24 +1,23 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 import Map, { Layer, MapRef, Source } from "react-map-gl/maplibre";
-import { setWorkerUrl } from "maplibre-gl";
-import { BATTLE_TIMELINE_SIMULATOR_VERSION } from "../../types/version";
+import { Point, setWorkerUrl } from "maplibre-gl";
 import "../../output.css";
 import { useEffect, useRef, useState } from "react";
-import { cassinoSimulation } from "../../data/simulations/battles/ww2/cassino/cassinoSimulation";
 import Panel from "../panel/panel";
 import Results from "../results";
-import { SimulationConfig } from "../../types/simulation/simulationConfig";
 import { simulationConfig } from "../../data/simulations/config/simulationConfig";
-import { normandySimulation } from "../../data/simulations/battles/ww2/normandy/normandySimulation";
-import { battleConfigs } from "../../data/simulations/battles/ww2";
-import { startSimulation } from "../../actions/startSimulation";
-import { stopSimulation } from "../../actions/endSimulation";
-import { initializeSimulation } from "../../actions/initializeSimulation";
-import { locationsToGeoJSON } from "../../lib/convertGEO";
+import { locationsToGeoJSON, unitsToGeoJSON } from "../../lib/convertGEO";
 import { locationLayerStyle } from "./layerStyles/locationLayerStyle";
-import { CampaignTypes, WarTypes } from "../../types/war/warTypes";
-import { getCampaign } from "../../actions/war/campaign";
-import { getWar, getWars } from "../../actions/war/wars";
+import { CampaignTypes } from "../../types/war/warTypes";
+import { getWars } from "../../actions/war/wars";
+import { getUnits } from "../../actions/war/units";
+import { Unit } from "../../types/units/unitTypes";
+import { unitLayerStyle } from "./layerStyles/unitLayerStyle";
+import { stopSimulation } from "../../actions/end";
+import { initializeSimulation } from "../../actions/initialize";
+import { startSimulation } from "../../actions/start";
+import Clock from "./clock/clock";
+import { getClock } from "../../actions/clock/clock";
 
 export function BattleMap({
   API_KEY,
@@ -36,7 +35,7 @@ export function BattleMap({
   };
 }) {
   const [simulationDefaultConfig, setSimulationDefaultConfig] =
-    useState<SimulationConfig>(simulationConfig);
+    useState(simulationConfig);
 
   const [mode, setMode] = useState(
     simulationDefaultConfig.simulationConfigSetting.mode,
@@ -59,28 +58,11 @@ export function BattleMap({
   const [war, setWar] = useState([]);
   const [campaigns, setCampaigns] = useState<CampaignTypes[]>([]);
   const [activeCampaign, setActiveCampaign] = useState<CampaignTypes[]>([]);
-
+  const [units, setUnits] = useState<Unit[]>();
+  const [clock, setClock] = useState<any>();
   if (workerUrl) {
     setWorkerUrl(workerUrl);
   }
-  // const geojson = {
-  //   type: "FeatureCollection",
-  //   features: [
-  //     {
-  //       type: "Feature",
-  //       geometry: { type: "Point", coordinates: [13.81, 41.49] },
-  //     },
-  //   ],
-  // };
-
-  const layerStyle = {
-    id: "point",
-    type: "circle",
-    paint: {
-      "circle-radius": 10,
-      "circle-color": "#007cbf",
-    },
-  };
 
   const setMap = (long: number, lat: number, zoom: number) => {
     mapRef.current?.flyTo({
@@ -117,7 +99,6 @@ export function BattleMap({
         const resp = await startSimulation(mode, simSpeed, conditions);
         if (resp) {
           const initInitialView = resp?.data?.initialView;
-          console.log(initInitialView, "start initial view");
           setMap(
             initInitialView.longitude,
             initInitialView.latitude,
@@ -156,40 +137,19 @@ export function BattleMap({
       const resp = await stopSimulation(1);
       if (resp) {
         const initInitialView = resp?.data?.initialView;
-        console.log(initInitialView, "end");
-        setMap(
-          initInitialView.longitude,
-          initInitialView.latitude,
-          initInitialView.zoom,
-        );
+        setMap(viewState.longitude, viewState.latitude, viewState.zoom);
       }
     } catch (error) {
       console.error("Failed to stop simulation:", error);
       throw error;
     }
   };
-  // useEffect(() => {
-  //   if (!activeCampaign) return;
-  //   const getActiveCampaign = async () => {
-  //     try {
-  //       const resp = await getCampaign(activeCampaign.id);
-  //       if (resp) {
-  //         console.log(resp, "got active campaign");
-  //         setActiveCampaign(resp?.data);
-  //       }
-  //     } catch (error) {
-  //       console.error("Failed to get war:", error);
-  //     }
-  //   };
-  //   getActiveCampaign();
-  // }, []);
-
   const cassinoLocations = [
     {
       id: "cassino",
       name: "Cassino",
       type: "town",
-      coordinates: [13.83, 41.4917],
+      coordinates: [13.83, 20],
       description:
         "The town of Cassino, a major urban battlefield during the battles of 1944.",
     },
@@ -250,10 +210,46 @@ export function BattleMap({
     },
   ];
 
+  useEffect(() => {
+    if (!mapReady) return;
+    const units = async () => {
+      try {
+        const resp = await getUnits();
+        if (resp) {
+          setUnits(resp?.units);
+          console.log(resp, "getting units");
+        }
+      } catch (error) {
+        console.error("failed to get all units", error);
+        throw error;
+      }
+    };
+    units();
+  }, [mapReady]);
   const geojson = locationsToGeoJSON(cassinoLocations);
+  const unitsGeojson = unitsToGeoJSON(units || []);
+  console.log(unitsGeojson, "units geojson");
   console.log(campaigns, "campaigns");
+
+  useEffect(() => {
+    if (!mapReady) return;
+    const clock = async () => {
+      try {
+        const resp = await getClock();
+        if (resp) {
+          setClock(resp?.clock);
+          console.log(resp, "getting clock");
+        }
+      } catch (error) {
+        console.error("failed to get clock", error);
+        throw error;
+      }
+    };
+    clock();
+  }, [mapReady]);
   return (
-    <div className="flex relative">
+    <div className="relative">
+      <Clock clock={clock} />
       <Results data={war} />
       <Panel
         setActiveCampaign={setActiveCampaign}
@@ -272,9 +268,7 @@ export function BattleMap({
         speed={simSpeed}
         conditions={conditions}
       />
-
       <Map
-        // onMove={(evt) => setViewState(evt.viewState)}
         ref={mapRef}
         onLoad={() => setMapReady(true)}
         style={{
@@ -286,6 +280,9 @@ export function BattleMap({
       >
         <Source id="my-data" type="geojson" data={geojson}>
           <Layer {...locationLayerStyle} />
+        </Source>
+        <Source id="my-data" type="geojson" data={unitsGeojson}>
+          <Layer {...unitLayerStyle} />
         </Source>
       </Map>
     </div>

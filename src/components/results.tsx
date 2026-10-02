@@ -11,7 +11,7 @@ export default function Results({ data }: { data: WarTypes[] }) {
 
   return (
     <div
-      className={`bg-background  flex absolute transition-all duration-300 right-0 top-10  w-3/12 lg:w-3/12  flex-col z-60 justify-between   ${toggleResultsPanel ? "translate-x-0" : "translate-x-full"}  p-10`}
+      className={`bg-background fixed flex transition-all duration-300 right-0 w-3/12 lg:w-3/12 top-30  flex-col z-60 justify-between   ${toggleResultsPanel ? "translate-x-full" : ""}  p-10`}
       ref={resultsRef}
     >
       <div
@@ -39,7 +39,12 @@ export default function Results({ data }: { data: WarTypes[] }) {
         </h2>
         <div className="">
           <div className="text-primary">
-            {data?.map((war) => {
+            <div>
+              <div>
+                <h4>Faction Strength:</h4>
+              </div>
+            </div>
+            {/* {data?.map((war) => {
               return (
                 <div key={war.id}>
                   <div>
@@ -58,7 +63,7 @@ export default function Results({ data }: { data: WarTypes[] }) {
                   </div>
                 </div>
               );
-            })}
+            })} */}
           </div>
         </div>
       </div>
