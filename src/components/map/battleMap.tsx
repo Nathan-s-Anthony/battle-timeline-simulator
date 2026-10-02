@@ -247,6 +247,21 @@ export function BattleMap({
     };
     clock();
   }, [mapReady]);
+
+  const socket = new WebSocket("ws://localhost:4000/simulation");
+
+  socket.onopen = () => {
+    console.log("Connected to simulation");
+  };
+
+  socket.onmessage = (event) => {
+    const message = JSON.parse(event.data);
+    console.log(message);
+  };
+
+  socket.onclose = () => {
+    console.log("Disconnected from simulation");
+  };
   return (
     <div className="relative">
       <Clock clock={clock} />
